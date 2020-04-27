@@ -19,6 +19,8 @@ protocol MultipeerServiceDelegate {
 
 class MultipeerSession: NSObject, MCAdvertiserAssistantDelegate {
     
+   
+    
     private let ServerName = "ChatRoom"
     
     var isHosting = false
