@@ -24,8 +24,10 @@ class HomeViewController: UIViewController {
     var peerNumberInPicker = 0
     var msgWrited: String = ""
     var isHosting = false
+    
     var listOfFiles = [String]()
     var myListOfFiles = [String]()
+    
     var myPeerID = MCPeerID(displayName: UIDevice.current.name)
     var mcAdvertiserAssistant: MCAdvertiserAssistant?
     var mcNearbyServiceAdvertiser: MCNearbyServiceAdvertiser?
@@ -98,7 +100,7 @@ class HomeViewController: UIViewController {
         if peerNumberInPicker == 0{
             sendMsg(message: msgWrited)
         }else{
-            sendMsgPrivate(message: msgWrited, peer: 0)
+            sendMsgPrivate(message: msgWrited, peer: peerNumberInPicker)
         }
         
         txtFiled.text = ""
@@ -218,7 +220,7 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         peerNumberInPicker = row
     }
-    pic
+    
     
 }
 
