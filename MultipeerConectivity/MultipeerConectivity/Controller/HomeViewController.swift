@@ -133,6 +133,21 @@ class HomeViewController: UIViewController {
     
     
     //MARK: - envia mensagem para o peer selecionado no piker
+    
+    func sendOverlay(myPeer: String){
+       
+            var peers:[MCPeerID] = []
+            
+            peers.append(mcSession.connectedPeers[0])
+            do {
+                try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                
+            }
+            catch let error {
+                NSLog("%@", "Error for sending: \(error)")
+            }
+        
+    }
     func sendMsgPrivate(message: String, peer: Int) {
         if self.mcSession.connectedPeers.count > 0 {
             if peer == 0 {
@@ -152,6 +167,7 @@ class HomeViewController: UIViewController {
                     NSLog("%@", "Error for sending: \(error)")
                 }
             }
+                
             else {
                 //manda para o peer escolhido no picker
                 var peers:[MCPeerID] = []
@@ -175,7 +191,7 @@ class HomeViewController: UIViewController {
         isHosting = false
         self.hostOrGuest.text = "Guest"
         self.serviceNearbyBrowser?.delegate = self
-        self.mcNearbyServiceAdvertiser?.startAdvertisingPeer()
+        //self.mcNearbyServiceAdvertiser?.startAdvertisingPeer()
         self.serviceNearbyBrowser?.startBrowsingForPeers()
         let mcBrowser = MCBrowserViewController(serviceType: "teste", session: mcSession)
         mcBrowser.delegate = self
@@ -193,10 +209,12 @@ class HomeViewController: UIViewController {
         mcAdvertiserAssistant?.start()
         getLocalFilesName()
         self.tableView.reloadData()
-        Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: {_ in
-            //pensei em utilizar os indice do array para identicar quem é tipo um array de int entao o peer ficaria passando a sua pozicao, aqui eu leria se eu recebi e se existe e entao eu daria um clear e o processo se repetiria, o peer mandaria sua posicao eu add novamento e verificaria novamente qundo ele nao tiver la eu removeria...
+        
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
+       
+           
             
-            // ou da para fazer pelo nome uzando um reduce ou filter ou ate mesmo o contains
+            
             print("verificando quem mandou msg ")
         })
         
