@@ -12,6 +12,8 @@ import CryptoKit
 class HomeViewController: UIViewController {
     
     
+    
+    
     @IBOutlet weak var hostOrGuest: UILabel!
     @IBOutlet weak var connectionsLabel: UILabel!
     @IBOutlet weak var txtAreaChat: UITextView!
@@ -21,7 +23,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var btnSend: UIButton!
     
     
-   
+    
     var peerNumberInPicker = 0
     var msgWrited: String = ""
     var isHosting = false
@@ -135,17 +137,17 @@ class HomeViewController: UIViewController {
     //MARK: - envia mensagem para o peer selecionado no piker
     
     func sendOverlay(myPeer: String){
-       
-            var peers:[MCPeerID] = []
+        
+        var peers:[MCPeerID] = []
+        
+        peers.append(mcSession.connectedPeers[0])
+        do {
+            try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
             
-            peers.append(mcSession.connectedPeers[0])
-            do {
-                try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                
-            }
-            catch let error {
-                NSLog("%@", "Error for sending: \(error)")
-            }
+        }
+        catch let error {
+            NSLog("%@", "Error for sending: \(error)")
+        }
         
     }
     func sendMsgPrivate(message: String, peer: Int) {
@@ -211,8 +213,8 @@ class HomeViewController: UIViewController {
         self.tableView.reloadData()
         
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
-       
-           
+            
+            
             
             
             print("verificando quem mandou msg ")
@@ -353,16 +355,44 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return listOfFiles.count
+        
+        if section == 0 {
+            return myListOfFiles.count
+        } else if section == 1 {
+            
+            return listOfFiles.count
+        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "Cell")
         
         cell.selectionStyle = .default
-        cell.textLabel?.text = listOfFiles[indexPath.row]
+        
+        
+        if indexPath.section == 0 {
+            cell.textLabel?.text = myListOfFiles[indexPath.row]
+        } else if indexPath.section == 1 {
+            cell.textLabel?.text = listOfFiles[indexPath.row]
+        }
         
         return cell
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "My Files"
+        } else if section == 1 {
+            
+            return "Shared Files"
+        }
+        
+        return ""
     }
     
     
