@@ -39,7 +39,7 @@ extension HomeViewController: MCSessionDelegate {
         case .notConnected:
             print("Not connected: \(peerID.displayName) ")
             DispatchQueue.main.async {
-                self.navigationItem.leftBarButtonItem?.image = UIImage(systemName: "circle")
+                self.navigationItem.leftBarButtonItem?.image = UIImage(systemName: "circle.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
             }
         @unknown default:
             print("Unknow state received: \(peerID.displayName) ")

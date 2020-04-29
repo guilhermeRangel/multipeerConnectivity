@@ -269,7 +269,7 @@ extension HomeViewController{
     func configureButtons() {
         _ = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showMyFilesAction))
         
-        let status = UIBarButtonItem(image: UIImage(systemName: "circle")?.withTintColor(.systemRed), landscapeImagePhone: nil, style: .plain, target: self, action: nil)
+        let status = UIBarButtonItem(image: UIImage(systemName: "circle.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal), landscapeImagePhone: nil, style: .plain, target: self, action: nil)
         
         let showDocumentsButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showConnectionPrompt))
         navigationItem.rightBarButtonItem = showDocumentsButton
