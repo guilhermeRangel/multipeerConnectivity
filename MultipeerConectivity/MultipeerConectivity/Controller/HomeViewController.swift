@@ -69,9 +69,9 @@ class HomeViewController: UIViewController {
     deinit {
         self.mcNearbyServiceAdvertiser?.stopAdvertisingPeer()
         self.serviceNearbyBrowser?.stopBrowsingForPeers()
-       }
-       
- 
+    }
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         title = "P2P - \(UIDevice.current.name)"
@@ -79,9 +79,12 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func btnMeusArquivos(_ sender: UIButton) {
-        listOfFiles.removeAll()
-        listOfFiles = myListOfFiles.map({$0})
-        tableView.reloadData()
+        if !isHosting{
+            listOfFiles.removeAll()
+            listOfFiles = myListOfFiles.map({$0})
+            tableView.reloadData()
+        }
+        
     }
     
     
@@ -132,7 +135,7 @@ class HomeViewController: UIViewController {
                 sendMsg(message: message)
                 
                 
-            //envia msg com os arquivos para o host quando ele loga no sistema
+                //envia msg com os arquivos para o host quando ele loga no sistema
             }else if peer == -1{
                 var peers:[MCPeerID] = []
                 
@@ -227,12 +230,12 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource{
 //MARK: - Funcoes
 extension HomeViewController{
     func MD5(string: String) -> String {
-         let digest = Insecure.MD5.hash(data: string.data(using: .utf8) ?? Data())
-
-         return digest.map {
-             String(format: "%02hhx", $0)
-         }.joined()
-     }
+        let digest = Insecure.MD5.hash(data: string.data(using: .utf8) ?? Data())
+        
+        return digest.map {
+            String(format: "%02hhx", $0)
+        }.joined()
+    }
     func getLocalFilesName() {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
@@ -245,7 +248,7 @@ extension HomeViewController{
                 if item.hasSuffix("txt") || item.hasSuffix("png"){
                     //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
                     if isHosting {
-                        listOfFiles.append(item)
+                        listOfFiles.append("\(item)-\(myPeerID.displayName)-Hash:\(MD5(string: item))")
                     }else {
                         myListOfFiles.append(item)
                     }
@@ -322,6 +325,11 @@ extension HomeViewController: UITextFieldDelegate{
 
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func setTableView(){
+        tableView.allowsMultipleSelection = true
+        
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listOfFiles.count
     }

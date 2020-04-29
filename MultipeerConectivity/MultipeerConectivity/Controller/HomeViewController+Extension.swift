@@ -50,7 +50,7 @@ extension HomeViewController: MCSessionDelegate {
             
             for arq in arquivo {
                 let hash = MD5(string: String(arq))
-                let stringWithHash = "\(arq)-Hash \(hash)"
+                let stringWithHash = "\(arq)-\(peerID.displayName)-Hash:\(hash)"
                 listOfFiles.append(String(stringWithHash))
             }
             
