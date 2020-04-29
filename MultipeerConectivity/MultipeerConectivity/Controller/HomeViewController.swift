@@ -8,7 +8,7 @@
 
 import MultipeerConnectivity
 import UIKit
-
+import CryptoKit
 class HomeViewController: UIViewController {
     
     
@@ -20,12 +20,12 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var txtFiled: UITextField!
     @IBOutlet weak var btnSend: UIButton!
     
-    
+    var peersOnline: [Int] = []
     var peerNumberInPicker = 0
     var msgWrited: String = ""
     var isHosting = false
     var listOfFiles = [String]()
-    var arquivosEnviadosInit = false
+    var myListOfFiles = [String]()
     var myPeerID = MCPeerID(displayName: UIDevice.current.name)
     var mcAdvertiserAssistant: MCAdvertiserAssistant?
     var mcNearbyServiceAdvertiser: MCNearbyServiceAdvertiser?
@@ -39,7 +39,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-    
+        
         txtFiled.delegate = self
         txtAreaChat.delegate = self
         txtAreaChat.isEditable = false
@@ -56,16 +56,39 @@ class HomeViewController: UIViewController {
         self.serviceNearbyBrowser = MCNearbyServiceBrowser(peer: myPeerID, serviceType: "teste")
         self.serviceNearbyBrowser?.delegate = self
         
+        
         self.mcSession = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .required)
         mcSession.delegate = self
         
         configureButtons()
         
     }
+    
+    deinit {
+        self.mcNearbyServiceAdvertiser?.stopAdvertisingPeer()
+        self.serviceNearbyBrowser?.stopBrowsingForPeers()
+       }
+       
+ 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         title = "P2P - \(UIDevice.current.name)"
         view.backgroundColor = .systemGray6
+    }
+    
+    @IBAction func btnMeusArquivos(_ sender: UIButton) {
+        listOfFiles.removeAll()
+        listOfFiles = myListOfFiles.map({$0})
+        tableView.reloadData()
+    }
+    
+    
+    @IBAction func btnRecursosDiponiveis(_ sender: UIButton) {
+        //implementar logica para mandar uma mensagem para o host e o host enviar a lista de com todos, alimentar o listOfFiles recebido o host
+    }
+    
+    @IBAction func btnSolicitarRecurso(_ sender: UIButton) {
+        //aqui eu seleciono o arquivo na table view e aperto esse botao  dai o host diz qm tem o arquivo e te devolve a posicao do array, dai manda outra mensagem automatica para ele e solicita o recurso e ele te envia automatico.
     }
     
     //MARK: - Botao para enviar mensagens
@@ -80,10 +103,10 @@ class HomeViewController: UIViewController {
         
         txtFiled.text = ""
         peerNumberInPicker = 0
-  
+        
     }
     
-   
+    
     //MARK: - Envia mensagem para todos os peers
     func sendMsg(message : String) {
         
@@ -98,14 +121,30 @@ class HomeViewController: UIViewController {
         
     }
     
-
+    
     
     //MARK: - envia mensagem para o peer selecionado no piker
     func sendMsgPrivate(message: String, peer: Int) {
         if self.mcSession.connectedPeers.count > 0 {
             if peer == 0 {
                 sendMsg(message: message)
-            }else {
+                
+                
+            //envia msg com os arquivos para o host quando ele loga no sistema
+            }else if peer == -1{
+                var peers:[MCPeerID] = []
+                
+                peers.append(mcSession.connectedPeers[0])
+                do {
+                    try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                    
+                }
+                catch let error {
+                    NSLog("%@", "Error for sending: \(error)")
+                }
+            }
+            else {
+                //manda para o peer escolhido no picker
                 var peers:[MCPeerID] = []
                 peers.append(mcSession.connectedPeers[peer])
                 do {
@@ -121,19 +160,19 @@ class HomeViewController: UIViewController {
     }
     
     
-  
+    
     
     func joinSession(action: UIAlertAction)  {
         isHosting = false
         self.hostOrGuest.text = "Guest"
         self.serviceNearbyBrowser?.delegate = self
+        self.mcNearbyServiceAdvertiser?.startAdvertisingPeer()
         self.serviceNearbyBrowser?.startBrowsingForPeers()
         let mcBrowser = MCBrowserViewController(serviceType: "teste", session: mcSession)
         mcBrowser.delegate = self
         present(mcBrowser, animated: true)
-        arquivosEnviadosInit = true
-        sendMsgPrivate(message: listOfFiles.description, peer: 0)
-        print(listOfFiles.description)
+        getLocalFilesName()
+        
     }
     
     func startHosting(action: UIAlertAction)  {
@@ -141,12 +180,19 @@ class HomeViewController: UIViewController {
         self.hostOrGuest.text = "Sou o Host"
         mcAdvertiserAssistant = MCAdvertiserAssistant(serviceType: "teste", discoveryInfo: nil, session: mcSession)
         self.mcNearbyServiceAdvertiser?.startAdvertisingPeer()
+        self.serviceNearbyBrowser?.startBrowsingForPeers()
         mcAdvertiserAssistant?.start()
         getLocalFilesName()
         self.tableView.reloadData()
+        Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: {_ in
+            //pensei em utilizar os indice do array para identicar quem é tipo um array de int entao o peer ficaria passando a sua pozicao, aqui eu leria se eu recebi e se existe e entao eu daria um clear e o processo se repetiria, o peer mandaria sua posicao eu add novamento e verificaria novamente qundo ele nao tiver la eu removeria...
+            
+            // ou da para fazer pelo nome uzando um reduce ou filter ou ate mesmo o contains
+            print("verificando quem mandou msg ")
+        })
         
     }
-
+    
 }
 
 //MARK: - UIPickerView
@@ -172,26 +218,36 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         peerNumberInPicker = row
     }
+    pic
     
 }
 
- //MARK: - Funcoes
+//MARK: - Funcoes
 extension HomeViewController{
-    
+    func MD5(string: String) -> String {
+         let digest = Insecure.MD5.hash(data: string.data(using: .utf8) ?? Data())
+
+         return digest.map {
+             String(format: "%02hhx", $0)
+         }.joined()
+     }
     func getLocalFilesName() {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
-//        let subdir = Bundle.main.url(forResource: "Teste", withExtension: "txt", subdirectory: "Files/")
+        //        let subdir = Bundle.main.url(forResource: "Teste", withExtension: "txt", subdirectory: "Files/")
         
         
         do {
             let items = try fm.contentsOfDirectory(atPath: path)
-            print("peguei os arquivos e adicionei na lista")
-            
             for item in items {
                 if item.hasSuffix("txt") || item.hasSuffix("png"){
-    
-                    listOfFiles.append(item)
+                    //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
+                    if isHosting {
+                        listOfFiles.append(item)
+                    }else {
+                        myListOfFiles.append(item)
+                    }
+                    
                 }
             }
         } catch  {
@@ -202,27 +258,27 @@ extension HomeViewController{
     }
     
     func configureButtons() {
-          _ = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showMyFilesAction))
-          
-          let status = UIBarButtonItem(image: UIImage(systemName: "circle")?.withTintColor(.systemRed), landscapeImagePhone: nil, style: .plain, target: self, action: nil)
-          
-          let showDocumentsButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showConnectionPrompt))
-          navigationItem.rightBarButtonItem = showDocumentsButton
-          navigationItem.leftBarButtonItem = status
-      }
-      
-      @objc func showMyFilesAction() {
-          
-      }
-      
-      @objc func showConnectionPrompt() {
-          let ac = UIAlertController(title: "Connect to others", message: nil, preferredStyle: .alert)
+        _ = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showMyFilesAction))
         
-          ac.addAction(UIAlertAction(title: "Host a session", style: .default, handler: startHosting))
-          ac.addAction(UIAlertAction(title: "Join a session", style: .default, handler: joinSession))
-          ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-          present(ac, animated: true)
-      }
+        let status = UIBarButtonItem(image: UIImage(systemName: "circle")?.withTintColor(.systemRed), landscapeImagePhone: nil, style: .plain, target: self, action: nil)
+        
+        let showDocumentsButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showConnectionPrompt))
+        navigationItem.rightBarButtonItem = showDocumentsButton
+        navigationItem.leftBarButtonItem = status
+    }
+    
+    @objc func showMyFilesAction() {
+        
+    }
+    
+    @objc func showConnectionPrompt() {
+        let ac = UIAlertController(title: "Connect to others", message: nil, preferredStyle: .alert)
+        
+        ac.addAction(UIAlertAction(title: "Host a session", style: .default, handler: startHosting))
+        ac.addAction(UIAlertAction(title: "Join a session", style: .default, handler: joinSession))
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(ac, animated: true)
+    }
 }
 
 //MARK: - UITextViewDelegate
@@ -252,11 +308,11 @@ extension HomeViewController: UITextFieldDelegate{
     }
     
     //captura a mensagem digitada
-       @IBAction func txtField(_ sender: UITextField) {
-           msgWrited = sender.text ?? "enviado"
-           
-           
-       }
+    @IBAction func txtField(_ sender: UITextField) {
+        msgWrited = sender.text ?? "enviado"
+        
+        
+    }
     
     
 }
@@ -279,4 +335,5 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     
 }
+
 

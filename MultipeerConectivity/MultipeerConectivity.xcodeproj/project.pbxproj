@@ -14,7 +14,6 @@
 		77D9528B244D241C0040C721 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D9528A244D241C0040C721 /* HomeViewController.swift */; };
 		77D9528E244D241C0040C721 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77D9528C244D241C0040C721 /* Main.storyboard */; };
 		77D95293244D241E0040C721 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77D95291244D241E0040C721 /* LaunchScreen.storyboard */; };
-		77D9529B244D24370040C721 /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D9529A244D24370040C721 /* MultipeerSession.swift */; };
 		8A0F81432457274F00D42CCE /* HomeViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81422457274F00D42CCE /* HomeViewController+Extension.swift */; };
 		8A0F814C2457357C00D42CCE /* Teste.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8A0F814B2457357C00D42CCE /* Teste.txt */; };
 /* End PBXBuildFile section */
@@ -29,7 +28,6 @@
 		77D9528D244D241C0040C721 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		77D95292244D241E0040C721 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		77D95294244D241E0040C721 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		77D9529A244D24370040C721 /* MultipeerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
 		8A0F81422457274F00D42CCE /* HomeViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController+Extension.swift"; sourceTree = "<group>"; };
 		8A0F814B2457357C00D42CCE /* Teste.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Teste.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,7 +94,6 @@
 		8AB4F73F2457247B00216490 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				77D9529A244D24370040C721 /* MultipeerSession.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -192,7 +189,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77D9529B244D24370040C721 /* MultipeerSession.swift in Sources */,
 				77D9528B244D241C0040C721 /* HomeViewController.swift in Sources */,
 				77D95287244D241C0040C721 /* AppDelegate.swift in Sources */,
 				77D95289244D241C0040C721 /* SceneDelegate.swift in Sources */,
