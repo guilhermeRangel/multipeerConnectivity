@@ -7,31 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		77122AC5245912D400673FEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77122AC4245912D400673FEF /* Assets.xcassets */; };
+		77122AC724591A1500673FEF /* fotoCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 77122AC624591A1500673FEF /* fotoCell.png */; };
 		77D95287244D241C0040C721 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D95286244D241C0040C721 /* AppDelegate.swift */; };
 		77D95289244D241C0040C721 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D95288244D241C0040C721 /* SceneDelegate.swift */; };
 		77D9528B244D241C0040C721 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D9528A244D241C0040C721 /* HomeViewController.swift */; };
 		77D9528E244D241C0040C721 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77D9528C244D241C0040C721 /* Main.storyboard */; };
-		77D95290244D241E0040C721 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77D9528F244D241E0040C721 /* Assets.xcassets */; };
 		77D95293244D241E0040C721 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77D95291244D241E0040C721 /* LaunchScreen.storyboard */; };
 		77D9529B244D24370040C721 /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D9529A244D24370040C721 /* MultipeerSession.swift */; };
 		8A0F81432457274F00D42CCE /* HomeViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81422457274F00D42CCE /* HomeViewController+Extension.swift */; };
 		8A0F814C2457357C00D42CCE /* Teste.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8A0F814B2457357C00D42CCE /* Teste.txt */; };
-		8A14B6872456620600E7B6DE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A14B6862456620600E7B6DE /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		77122AC4245912D400673FEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		77122AC624591A1500673FEF /* fotoCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fotoCell.png; sourceTree = "<group>"; };
 		77D95283244D241C0040C721 /* MultipeerConectivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultipeerConectivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D95286244D241C0040C721 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		77D95288244D241C0040C721 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		77D9528A244D241C0040C721 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		77D9528D244D241C0040C721 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		77D9528F244D241E0040C721 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77D95292244D241E0040C721 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		77D95294244D241E0040C721 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77D9529A244D24370040C721 /* MultipeerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
 		8A0F81422457274F00D42CCE /* HomeViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController+Extension.swift"; sourceTree = "<group>"; };
 		8A0F814B2457357C00D42CCE /* Teste.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Teste.txt; sourceTree = "<group>"; };
-		8A14B6862456620600E7B6DE /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +64,7 @@
 		77D95285244D241C0040C721 /* MultipeerConectivity */ = {
 			isa = PBXGroup;
 			children = (
+				77DF4A9E24591EC600A7B885 /* Controller */,
 				8A0F814A2457356000D42CCE /* Files */,
 				8AB4F7422457252E00216490 /* Support */,
 				8AB4F73F2457247B00216490 /* Model */,
@@ -74,9 +75,19 @@
 			path = MultipeerConectivity;
 			sourceTree = "<group>";
 		};
+		77DF4A9E24591EC600A7B885 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				77D9528A244D241C0040C721 /* HomeViewController.swift */,
+				8A0F81422457274F00D42CCE /* HomeViewController+Extension.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		8A0F814A2457356000D42CCE /* Files */ = {
 			isa = PBXGroup;
 			children = (
+				77122AC624591A1500673FEF /* fotoCell.png */,
 				8A0F814B2457357C00D42CCE /* Teste.txt */,
 			);
 			path = Files;
@@ -93,7 +104,7 @@
 		8AB4F7422457252E00216490 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				77D9528F244D241E0040C721 /* Assets.xcassets */,
+				77122AC4245912D400673FEF /* Assets.xcassets */,
 				77D95286244D241C0040C721 /* AppDelegate.swift */,
 				77D95288244D241C0040C721 /* SceneDelegate.swift */,
 			);
@@ -103,10 +114,7 @@
 		8AB4F7432457254800216490 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				77D9528A244D241C0040C721 /* HomeViewController.swift */,
-				8A14B6862456620600E7B6DE /* LoginViewController.swift */,
 				77D9528C244D241C0040C721 /* Main.storyboard */,
-				8A0F81422457274F00D42CCE /* HomeViewController+Extension.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -171,7 +179,8 @@
 			files = (
 				8A0F814C2457357C00D42CCE /* Teste.txt in Resources */,
 				77D95293244D241E0040C721 /* LaunchScreen.storyboard in Resources */,
-				77D95290244D241E0040C721 /* Assets.xcassets in Resources */,
+				77122AC724591A1500673FEF /* fotoCell.png in Resources */,
+				77122AC5245912D400673FEF /* Assets.xcassets in Resources */,
 				77D9528E244D241C0040C721 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -186,7 +195,6 @@
 				77D9529B244D24370040C721 /* MultipeerSession.swift in Sources */,
 				77D9528B244D241C0040C721 /* HomeViewController.swift in Sources */,
 				77D95287244D241C0040C721 /* AppDelegate.swift in Sources */,
-				8A14B6872456620600E7B6DE /* LoginViewController.swift in Sources */,
 				77D95289244D241C0040C721 /* SceneDelegate.swift in Sources */,
 				8A0F81432457274F00D42CCE /* HomeViewController+Extension.swift in Sources */,
 			);
@@ -331,10 +339,10 @@
 		77D95298244D241E0040C721 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ZJDDP65ZQ3;
+				DEVELOPMENT_TEAM = TYNC5NT5U5;
 				INFOPLIST_FILE = MultipeerConectivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -349,10 +357,10 @@
 		77D95299244D241E0040C721 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ZJDDP65ZQ3;
+				DEVELOPMENT_TEAM = TYNC5NT5U5;
 				INFOPLIST_FILE = MultipeerConectivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
