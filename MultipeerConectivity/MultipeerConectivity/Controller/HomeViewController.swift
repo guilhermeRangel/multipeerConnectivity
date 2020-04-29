@@ -20,13 +20,17 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var txtFiled: UITextField!
     @IBOutlet weak var btnSend: UIButton!
     
-    var peersOnline: [Int] = []
+    
+   
     var peerNumberInPicker = 0
     var msgWrited: String = ""
     var isHosting = false
     
     var listOfFiles = [String]()
     var myListOfFiles = [String]()
+    
+    var peerOnline = PeerOnline()
+    var arrayPeers = ArrayPeersOnlineServer()
     
     var myPeerID = MCPeerID(displayName: UIDevice.current.name)
     var mcAdvertiserAssistant: MCAdvertiserAssistant?

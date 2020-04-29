@@ -17,6 +17,12 @@ extension HomeViewController: MCSessionDelegate {
         case .connected:
             DispatchQueue.main.async {
                 self.navigationItem.leftBarButtonItem?.image = UIImage(systemName: "circle.fill")
+                //modelo [[Nome:Posicao],..]
+                self.peerOnline.peerOnline = [peerID.displayName:session.connectedPeers.count]
+              
+                if self.isHosting{
+                    self.arrayPeers.allPeersOn.append(self.peerOnline)
+                }
                 
                 self.connectionsLabel.text = "Conectados(\(session.connectedPeers.count)):\(session.connectedPeers.map{$0.displayName} )"
                 self.picker.reloadAllComponents()
