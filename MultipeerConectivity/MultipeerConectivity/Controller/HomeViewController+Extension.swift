@@ -12,21 +12,26 @@ import UIKit
 
 
 extension HomeViewController: MCSessionDelegate {
+    
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
         case .connected:
             DispatchQueue.main.async {
                 self.navigationItem.leftBarButtonItem?.image = UIImage(systemName: "circle.fill")
                 //modelo [[Nome:Posicao],..]
-                self.peerOnline.peerOnline = [peerID.displayName:session.connectedPeers.count]
+                
+                self.peerOnline.peerOnline = [peerID.displayName:[session.connectedPeers.count:true]]
+              
               
                 if self.isHosting{
                     self.arrayPeers.allPeersOn.append(self.peerOnline)
+                     self.tableView.reloadData()
+                   
                 }
                 
                 self.connectionsLabel.text = "Conectados(\(session.connectedPeers.count)):\(session.connectedPeers.map{$0.displayName} )"
                 self.picker.reloadAllComponents()
-                self.tableView.reloadData()
+               
                 
                 
                 
@@ -61,10 +66,22 @@ extension HomeViewController: MCSessionDelegate {
             }
             
             
+        
             
             OperationQueue.main.addOperation {
                 self.tableView.reloadData()
             }
+            
+        }else if str.contains("overlay"){
+            
+            
+
+             var myPeerIdRcv = str.split(separator: "-")
+            
+            print(myPeerIdRcv.first)
+           
+                
+            
         }
         
         OperationQueue.main.addOperation {
@@ -117,13 +134,13 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
         print("browserViewControllerDidFinish")
         dismiss(animated: true)
         
-        if self.isHosting == false {
+        if !isHosting {
             self.sendMsgPrivate(message: "\(self.myListOfFiles.description):hash", peer: -1)
             
             
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
                 print("enviando posicao a cada 5s")
-                //self.sendMsgPrivate(message: self.myPeerID.displayName, peer: -1)
+                self.sendOverlay(myPeer: "\(self.myPeerID.displayName)-overlay")
             })
         }
         
