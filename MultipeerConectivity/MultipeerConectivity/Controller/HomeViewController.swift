@@ -85,11 +85,11 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func btnMeusArquivos(_ sender: UIButton) {
-//        if !isHosting{
-//            listOfFiles.removeAll()
-//            listOfFiles = myListOfFiles.map({$0})
-//            tableView.reloadData()
-//        }
+        //        if !isHosting{
+        //            listOfFiles.removeAll()
+        //            listOfFiles = myListOfFiles.map({$0})
+        //            tableView.reloadData()
+        //        }
     }
     
     
@@ -203,27 +203,30 @@ class HomeViewController: UIViewController {
         self.serviceNearbyBrowser?.startBrowsingForPeers()
         mcAdvertiserAssistant?.start()
         getLocalFilesName()
-
+        
         self.tableView.reloadData()
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
-     
+            
             if self.mcSession.connectedPeers.count == self.arrayPeers.allPeersOn.count {
+                
                 self.arrayPeers.allPeersOn.removeAll()
+                
                 print("Server - Removi todos do array.. esperando que eles se adicionem de novo")
                 
             }else {
-              print("alguem nao enviou ou saiu... Removendo ele da lista e desconectando")
-          
+                print("alguem nao enviou ou saiu... Removendo ele da lista e desconectando")
+                
                 for p1 in self.mcSession.connectedPeers{
                     for p2 in self.arrayPeers.allPeersOn {
                         //se ele nao contem o p2 é pq ele ja foi removido ou saiu ou nao mandou a msg
                         if !p2.peerOnline.contains(p1.displayName){
                             let peerID: MCPeerID = MCPeerID(displayName: p2.peerOnline.first!)
                             self.mcSession.cancelConnectPeer(peerID)
-                       }
+                        }
                     }
                 }
-            } 
+            }
+        })
         
     }
     
@@ -283,7 +286,7 @@ extension HomeViewController{
                 }
             }
             self.tableView.reloadData()
-
+            
         } catch  {
             let ac = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
