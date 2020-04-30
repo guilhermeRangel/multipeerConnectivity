@@ -8,7 +8,7 @@
 
 import Foundation
 struct PeerOnline {
-    var peerOnline: [String] = []
+    var peerOnline: [String:[Int:Bool]] = [:]
 }
 
 struct ArrayPeersOnlineServer {

@@ -20,16 +20,21 @@ extension HomeViewController: MCSessionDelegate {
                 self.navigationItem.leftBarButtonItem?.image = UIImage(systemName: "circle.fill")
                 //modelo [[Nome:Posicao],..]
                 
-                
-                
+                self.peerOnline.peerOnline = [peerID.displayName:[session.connectedPeers.count:true]]
+              
+              
                 if self.isHosting{
+                    self.arrayPeers.allPeersOn.append(self.peerOnline)
+                     self.tableView.reloadData()
                    
-                    self.tableView.reloadData()
-                    
                 }
                 
                 self.connectionsLabel.text = "Conectados(\(session.connectedPeers.count)):\(session.connectedPeers.map{$0.displayName} )"
                 self.picker.reloadAllComponents()
+               
+                
+                
+                
                 
             }
             
@@ -48,7 +53,7 @@ extension HomeViewController: MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         let str = String(data: data, encoding: .utf8)!
-        
+
         if str.contains("hash") {
             var _: [String] = []
             //MARK: - Tratar melhor, cansei aqui
@@ -61,7 +66,7 @@ extension HomeViewController: MCSessionDelegate {
             }
             
             
-            
+        
             
             OperationQueue.main.addOperation {
                 self.tableView.reloadData()
@@ -69,15 +74,13 @@ extension HomeViewController: MCSessionDelegate {
             
         }else if str.contains("overlay"){
             
+            
 
-            self.peerOnline.peerOnline.append(peerID.displayName)
-            self.arrayPeers.allPeersOn.append(self.peerOnline)
+             var myPeerIdRcv = str.split(separator: "-")
             
-            
-            
-            
-            
-            
+            print(myPeerIdRcv.first)
+           
+                
             
         }
         
