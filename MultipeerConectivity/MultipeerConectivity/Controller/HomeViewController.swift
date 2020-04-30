@@ -85,12 +85,11 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func btnMeusArquivos(_ sender: UIButton) {
-        if !isHosting{
-            listOfFiles.removeAll()
-            listOfFiles = myListOfFiles.map({$0})
-            tableView.reloadData()
-        }
-        
+//        if !isHosting{
+//            listOfFiles.removeAll()
+//            listOfFiles = myListOfFiles.map({$0})
+//            tableView.reloadData()
+//        }
     }
     
     
@@ -123,15 +122,11 @@ class HomeViewController: UIViewController {
         
         do {
             try mcSession.send(message.data(using: .utf8)!, toPeers: mcSession.connectedPeers, with: .reliable)
-            
         }
         catch let error {
             NSLog("%@", "Error for sending: \(error)")
         }
-        
-        
     }
-    
     
     
     //MARK: - envia mensagem para o peer selecionado no piker
@@ -143,7 +138,6 @@ class HomeViewController: UIViewController {
         peers.append(mcSession.connectedPeers[0])
         do {
             try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
-            
         }
         catch let error {
             NSLog("%@", "Error for sending: \(error)")
@@ -176,7 +170,6 @@ class HomeViewController: UIViewController {
                 peers.append(mcSession.connectedPeers[peer])
                 do {
                     try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                    
                 }
                 catch let error {
                     NSLog("%@", "Error for sending: \(error)")
@@ -210,7 +203,7 @@ class HomeViewController: UIViewController {
         self.serviceNearbyBrowser?.startBrowsingForPeers()
         mcAdvertiserAssistant?.start()
         getLocalFilesName()
-        self.tableView.reloadData()
+//        self.tableView.reloadData()
         
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
             
@@ -238,10 +231,7 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        
         return "\(mcSession.connectedPeers[row].displayName)"
-        
-        
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -273,12 +263,15 @@ extension HomeViewController{
                     //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
                     if isHosting {
                         listOfFiles.append("\(item)-\(myPeerID.displayName)-Hash:\(MD5(string: item))")
+                        myListOfFiles.append(item)
                     }else {
                         myListOfFiles.append(item)
                     }
                     
                 }
             }
+            self.tableView.reloadData()
+
         } catch  {
             let ac = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
@@ -321,7 +314,6 @@ extension HomeViewController: UITextViewDelegate{
     @objc func dismissKeyboard() {
         self.view.endEditing(true)
     }
-    
 }
 
 
@@ -339,27 +331,20 @@ extension HomeViewController: UITextFieldDelegate{
     //captura a mensagem digitada
     @IBAction func txtField(_ sender: UITextField) {
         msgWrited = sender.text ?? "enviado"
-        
-        
     }
-    
-    
 }
-
 
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func setTableView(){
         tableView.allowsMultipleSelection = true
-        
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if section == 0 {
             return myListOfFiles.count
         } else if section == 1 {
-            
             return listOfFiles.count
         }
         return 1
@@ -370,13 +355,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.selectionStyle = .default
         
-        
         if indexPath.section == 0 {
             cell.textLabel?.text = myListOfFiles[indexPath.row]
         } else if indexPath.section == 1 {
             cell.textLabel?.text = listOfFiles[indexPath.row]
         }
-        
         return cell
     }
     
@@ -388,10 +371,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         if section == 0 {
             return "My Files"
         } else if section == 1 {
-            
             return "Shared Files"
         }
-        
         return ""
     }
     
