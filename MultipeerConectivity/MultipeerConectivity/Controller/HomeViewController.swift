@@ -203,15 +203,27 @@ class HomeViewController: UIViewController {
         self.serviceNearbyBrowser?.startBrowsingForPeers()
         mcAdvertiserAssistant?.start()
         getLocalFilesName()
-//        self.tableView.reloadData()
-        
+
+        self.tableView.reloadData()
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
-            
-            
-            
-            
-            print("verificando quem mandou msg ")
-        })
+     
+            if self.mcSession.connectedPeers.count == self.arrayPeers.allPeersOn.count {
+                self.arrayPeers.allPeersOn.removeAll()
+                print("Server - Removi todos do array.. esperando que eles se adicionem de novo")
+                
+            }else {
+              print("alguem nao enviou ou saiu... Removendo ele da lista e desconectando")
+          
+                for p1 in self.mcSession.connectedPeers{
+                    for p2 in self.arrayPeers.allPeersOn {
+                        //se ele nao contem o p2 é pq ele ja foi removido ou saiu ou nao mandou a msg
+                        if !p2.peerOnline.contains(p1.displayName){
+                            let peerID: MCPeerID = MCPeerID(displayName: p2.peerOnline.first!)
+                            self.mcSession.cancelConnectPeer(peerID)
+                       }
+                    }
+                }
+            } 
         
     }
     
