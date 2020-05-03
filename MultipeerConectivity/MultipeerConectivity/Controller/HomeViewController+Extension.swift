@@ -19,11 +19,8 @@ extension HomeViewController: MCSessionDelegate {
             DispatchQueue.main.async {
                 self.navigationItem.leftBarButtonItem?.image = UIImage(systemName: "circle.fill")
                 //modelo [[Nome:Posicao],..]
-                
-                
-                
                 if self.isHosting{
-                   
+                    
                     self.tableView.reloadData()
                     
                 }
@@ -52,33 +49,32 @@ extension HomeViewController: MCSessionDelegate {
         if str.contains("hash") {
             var _: [String] = []
             //MARK: - Tratar melhor, cansei aqui
-            let arquivo = str.split(separator: ",")
+            var arquivo = str.split(separator: ",")
             
             for arq in arquivo {
                 let hash = MD5(string: String(arq))
                 let stringWithHash = "\(arq)-\(peerID.displayName)-Hash:\(hash)"
                 listOfFiles.append(String(stringWithHash))
             }
-            
-            
-            
-            
             OperationQueue.main.addOperation {
                 self.tableView.reloadData()
             }
             
+            
+            
         }else if str.contains("overlay"){
             
-
+            
             self.peerOnline.peerOnline.append(peerID.displayName)
             self.arrayPeers.allPeersOn.append(self.peerOnline)
+
             
-            
-            
-            
-            
-            
-            
+        }else if str.contains("request"){
+            var arquivos: [String] = []
+          
+    
+            sendMsgPrivate(message: "\(listOfFiles)", peer: -2, peerIDRequest: peerID)
+            print(arquivos)
         }
         
         OperationQueue.main.addOperation {
@@ -132,7 +128,7 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
         dismiss(animated: true)
         
         if !isHosting {
-            self.sendMsgPrivate(message: "\(self.myListOfFiles.description):hash", peer: -1)
+            self.sendMsgPrivate(message: "\(self.myListOfFiles.description):hash", peer: -1, peerIDRequest: nil)
             
             
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in

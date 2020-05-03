@@ -96,6 +96,8 @@ class HomeViewController: UIViewController {
     
     @IBAction func btnRecursosDiponiveis(_ sender: UIButton) {
         //implementar logica para mandar uma mensagem para o host e o host enviar a lista de com todos, alimentar o listOfFiles recebido o host
+            sendMsgPrivate(message: "request", peer: -1, peerIDRequest: myPeerID)
+    
     }
     
     @IBAction func btnSolicitarRecurso(_ sender: UIButton) {
@@ -109,7 +111,7 @@ class HomeViewController: UIViewController {
         if peerNumberInPicker == 0{
             sendMsg(message: msgWrited)
         }else{
-            sendMsgPrivate(message: msgWrited, peer: peerNumberInPicker)
+            sendMsgPrivate(message: msgWrited, peer: peerNumberInPicker, peerIDRequest: nil)
         }
         
         txtFiled.text = ""
@@ -135,19 +137,19 @@ class HomeViewController: UIViewController {
     func sendOverlay(myPeer: String){
         if !isHosting {
             var peers:[MCPeerID] = []
-                  
-                  peers.append(mcSession.connectedPeers[0])
-                  do {
-                      try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                  }
-                  catch let error {
-                      NSLog("%@", "Error for sending: \(error)")
-                  }
+            
+            peers.append(mcSession.connectedPeers[0])
+            do {
+                try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
+            }
+            catch let error {
+                NSLog("%@", "Error for sending: \(error)")
+            }
         }
-      
+        
         
     }
-    func sendMsgPrivate(message: String, peer: Int) {
+    func sendMsgPrivate(message: String, peer: Int, peerIDRequest: MCPeerID?) {
         if self.mcSession.connectedPeers.count > 0 {
             if peer == 0 {
                 sendMsg(message: message)
@@ -157,17 +159,28 @@ class HomeViewController: UIViewController {
             }else if peer == -1{
                 if !isHosting{
                     var peers:[MCPeerID] = []
-                                
-                                peers.append(mcSession.connectedPeers[0])
-                                do {
-                                    try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                                    
-                                }
-                                catch let error {
-                                    NSLog("%@", "Error for sending: \(error)")
-                                }
+                    
+                    peers.append(mcSession.connectedPeers[0])
+                    do {
+                        try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                        
+                    }
+                    catch let error {
+                        NSLog("%@", "Error for sending: \(error)")
+                    }
                 }
-            
+                
+            }else if peer == -2 {
+                 var peers:[MCPeerID] = []
+                peers.append(peerIDRequest!)
+                
+                do {
+                    try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                    
+                }
+                catch let error {
+                    NSLog("%@", "Error for sending: \(error)")
+                }
             }
                 
             else {
@@ -280,26 +293,27 @@ extension HomeViewController{
         let digest = SHA256.hash(data: data)
         return digest.description
     }
- 
+    
     
     
     func getLocalFilesName() {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
         
-       
+        
         do {
             let items = try fm.contentsOfDirectory(atPath: path)
-            for item in items {
             
+            for item in items {
+                
                 if item.hasSuffix("txt") || item.hasSuffix("png"){
                     let name = item.split(separator: ".")
-                   let hashCalculed = sha256(name: name.first!.description, type: name.last!.description)
+                    let hashCalculed = sha256(name: name.first!.description, type: name.last!.description)
                     //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
                     if isHosting {
-                       
+                        
                         listOfFiles.append("\(item)-\(myPeerID.displayName)-Hash:\(hashCalculed)")
-                       print(hashCalculed)
+                        print(hashCalculed)
                         myListOfFiles.append(item)
                     }else {
                         myListOfFiles.append(item)
