@@ -9,6 +9,7 @@
 import MultipeerConnectivity
 import UIKit
 import CryptoKit
+import Foundation
 class HomeViewController: UIViewController {
     
     
@@ -258,6 +259,8 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource{
 
 //MARK: - Funcoes
 extension HomeViewController{
+    
+    
     func MD5(string: String) -> String {
         let digest = Insecure.MD5.hash(data: string.data(using: .utf8) ?? Data())
         
@@ -265,19 +268,33 @@ extension HomeViewController{
             String(format: "%02hhx", $0)
         }.joined()
     }
+    
+    func sha256(name: String, type: String) -> String{
+        let path = Bundle.main.path(forResource: name, ofType: type)!
+        let data = FileManager.default.contents(atPath: path)!
+        let digest = SHA256.hash(data: data)
+        return digest.description
+    }
+ 
+    
+    
     func getLocalFilesName() {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
-        //        let subdir = Bundle.main.url(forResource: "Teste", withExtension: "txt", subdirectory: "Files/")
         
-        
+       
         do {
             let items = try fm.contentsOfDirectory(atPath: path)
             for item in items {
+            
                 if item.hasSuffix("txt") || item.hasSuffix("png"){
+                    let name = item.split(separator: ".")
+                   let hashCalculed = sha256(name: name.first!.description, type: name.last!.description)
                     //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
                     if isHosting {
-                        listOfFiles.append("\(item)-\(myPeerID.displayName)-Hash:\(MD5(string: item))")
+                       
+                        listOfFiles.append("\(item)-\(myPeerID.displayName)-Hash:\(hashCalculed)")
+                       print(hashCalculed)
                         myListOfFiles.append(item)
                     }else {
                         myListOfFiles.append(item)
@@ -393,5 +410,4 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     
 }
-
 
