@@ -49,17 +49,17 @@ extension HomeViewController: MCSessionDelegate {
         if str.contains("hash") {
             var _: [String] = []
             //MARK: - Tratar melhor, cansei aqui
-            var arquivo = str.split(separator: ",")
+            let arquivo = str.split(separator: ";")
             
             for arq in arquivo {
                 let hash = MD5(string: String(arq))
                 let stringWithHash = "\(arq)-\(peerID.displayName)-Hash:\(hash)"
-//                stringWithHash = stringWithHash.re
+                
                 listOfFiles.append(String(stringWithHash))
             }
-
+            
             OperationQueue.main.addOperation {
-
+                
                 self.tableView.reloadData()
             }
             
@@ -70,13 +70,13 @@ extension HomeViewController: MCSessionDelegate {
             
             self.peerOnline.peerOnline.append(peerID.displayName)
             self.arrayPeers.allPeersOn.append(self.peerOnline)
-
+            
             
         }else if str.contains("request"){
             
             var arquivos: [String] = []
-          
-    
+            
+            
             sendMsgPrivate(message: "\(listOfFiles)", peer: -2, peerIDRequest: peerID)
             print(arquivos)
         } else if str.contains("PeerRequest") {
@@ -87,19 +87,57 @@ extension HomeViewController: MCSessionDelegate {
             
             let owner = message[1]
             
-            let msg = fileName + owner
+            let msg = "\(fileName)-\(owner))"
             let msgStr = String(msg)
             let ownerPerrID = mcSession.connectedPeers.filter { $0.displayName == String(owner) }
             
             
-            sendMsgPrivate(message: "\(msgStr)P2P\(peerID.displayName)", peer: -2, peerIDRequest: ownerPerrID.first)
-           
+            sendMsgPrivate(message: "\(msgStr)-P2P-\(peerID.displayName)", peer: -2, peerIDRequest: ownerPerrID.first)
+            
             
         }else if str.contains("P2P") {
+            // "[\"Teste.txt\"-iPhone SE (2nd generation))-P2P-iPhone de Matheus
+            
+            // "[\"Teste.txt\"
+            
+            //enviando posicao a cada 5s
+            
+            //iPhone de Matheus
+            
+            let message = str.split(separator: "-")
+            
+            let fileName = message.first!
+            
+            let destination = message.last!
+            
             print(str)
+            
+            print(fileName)
+            print(destination)
             print("recebi a solicitacao para enviar para o peer que pediu")
+            
+            
+            let fileNameSplitted = fileName.split(separator: ".")
+            let name = String(fileNameSplitted.first!)
+            let fileType = String(fileNameSplitted.last!)
+            
+            let fm = FileManager.default
+            let path = Bundle.main.path(forResource: name, ofType: fileType)
+            
+            let peerToSend = mcSession.connectedPeers.filter {$0.displayName == destination}
+            
+            
+            mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
+                if error != nil {
+                    print("Error ao enviar arquivo: \(error)")
+                }
+            }
+            
+            
+            
+            
         }
-     
+        
         OperationQueue.main.addOperation {
             self.txtAreaChat.insertText("\(peerID.displayName) > \(str)\n")
         }
@@ -107,15 +145,18 @@ extension HomeViewController: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        
+        print("nao é esse")
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        
+        print("Recebendo arquivo: \(resourceName)")
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-        
+        if error != nil {
+            print("Erro ao receber o arquivo: \(resourceName)")
+        }
+        print("Recebeu arquivo: \(resourceName)")
     }
 }
 
@@ -151,9 +192,12 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
         dismiss(animated: true)
         
         if !isHosting {
-            self.sendMsgPrivate(message: "\(self.myListOfFiles.description):hash", peer: -1, peerIDRequest: nil)
+            var message = ""
             
+            self.myListOfFiles.forEach {message += "\($0);"}
+            self.sendMsgPrivate(message: "\(message);hash", peer: -1, peerIDRequest: nil)
             
+            print(message)
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
                 print("enviando posicao a cada 5s")
                 self.sendOverlay(myPeer: "\(self.myPeerID.displayName)-overlay")

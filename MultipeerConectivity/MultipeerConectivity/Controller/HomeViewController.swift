@@ -231,7 +231,7 @@ class HomeViewController: UIViewController {
         isHosting = false
         self.hostOrGuest.text = "Guest"
         self.serviceNearbyBrowser?.delegate = self
-        //self.mcNearbyServiceAdvertiser?.startAdvertisingPeer()
+        self.mcNearbyServiceAdvertiser?.startAdvertisingPeer()
         self.serviceNearbyBrowser?.startBrowsingForPeers()
         let mcBrowser = MCBrowserViewController(serviceType: "teste", session: mcSession)
         mcBrowser.delegate = self
@@ -325,7 +325,6 @@ extension HomeViewController{
     func getLocalFilesName() {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
-        
         
         do {
             let items = try fm.contentsOfDirectory(atPath: path)
@@ -456,10 +455,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if indexPath.section == 1 {
-            
-            dump(listOfFiles.count)
-            dump(listOfFiles[indexPath.row])
-            
             if !isHosting{
                 showResquestFileAlert(with: listOfFiles[indexPath.row])
             }
