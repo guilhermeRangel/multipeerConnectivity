@@ -154,18 +154,15 @@ class HomeViewController: UIViewController {
     func peerToPeerRequest(message: String) {
         let str = message.split(separator: "-")
         
-        let fileName = str.first!
         
-        let owner = str[1]
-        
-        
-        let msg = "\(message)p2p"
+        let msg = "\(message)PeerRequest"
  
             var peers:[MCPeerID] = []
             
             peers.append(mcSession.connectedPeers[0])
+        
             do {
-                try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                try mcSession.send(msg.data(using: .utf8)!, toPeers: peers, with: .reliable)
             }
             catch let error {
                 NSLog("%@", "Error for sending: \(error)")
@@ -474,7 +471,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let ac = UIAlertController(title: "Voce solicitou o arquivo: \(name)", message: nil, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
             self.peerToPeerRequest(message: name)
-            print("cliquei aqui")
+
         }))
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(ac, animated: true)

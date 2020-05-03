@@ -73,12 +73,14 @@ extension HomeViewController: MCSessionDelegate {
 
             
         }else if str.contains("request"){
+            
             var arquivos: [String] = []
           
     
             sendMsgPrivate(message: "\(listOfFiles)", peer: -2, peerIDRequest: peerID)
             print(arquivos)
-        } else if str.contains("p2p") {
+        } else if str.contains("PeerRequest") {
+            
             let message = str.split(separator: "-")
             
             let fileName = message.first!
@@ -86,11 +88,18 @@ extension HomeViewController: MCSessionDelegate {
             let owner = message[1]
             
             let msg = fileName + owner
+            let msgStr = String(msg)
+            let ownerPerrID = mcSession.connectedPeers.filter { $0.displayName == String(owner) }
             
-            print(msg)
             
+            sendMsgPrivate(message: "\(msgStr)P2P\(peerID.displayName)", peer: -2, peerIDRequest: ownerPerrID.first)
+           
+            
+        }else if str.contains("P2P") {
+            print(str)
+            print("recebi a solicitacao para enviar para o peer que pediu")
         }
-        
+     
         OperationQueue.main.addOperation {
             self.txtAreaChat.insertText("\(peerID.displayName) > \(str)\n")
         }
