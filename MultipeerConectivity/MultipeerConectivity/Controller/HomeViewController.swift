@@ -133,16 +133,18 @@ class HomeViewController: UIViewController {
     //MARK: - envia mensagem para o peer selecionado no piker
     
     func sendOverlay(myPeer: String){
-        
-        var peers:[MCPeerID] = []
-        
-        peers.append(mcSession.connectedPeers[0])
-        do {
-            try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
+        if !isHosting {
+            var peers:[MCPeerID] = []
+                  
+                  peers.append(mcSession.connectedPeers[0])
+                  do {
+                      try mcSession.send(myPeer.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                  }
+                  catch let error {
+                      NSLog("%@", "Error for sending: \(error)")
+                  }
         }
-        catch let error {
-            NSLog("%@", "Error for sending: \(error)")
-        }
+      
         
     }
     func sendMsgPrivate(message: String, peer: Int) {
@@ -153,16 +155,19 @@ class HomeViewController: UIViewController {
                 
                 //envia msg com os arquivos para o host quando ele loga no sistema
             }else if peer == -1{
-                var peers:[MCPeerID] = []
-                
-                peers.append(mcSession.connectedPeers[0])
-                do {
-                    try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                    
+                if !isHosting{
+                    var peers:[MCPeerID] = []
+                                
+                                peers.append(mcSession.connectedPeers[0])
+                                do {
+                                    try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
+                                    
+                                }
+                                catch let error {
+                                    NSLog("%@", "Error for sending: \(error)")
+                                }
                 }
-                catch let error {
-                    NSLog("%@", "Error for sending: \(error)")
-                }
+            
             }
                 
             else {
