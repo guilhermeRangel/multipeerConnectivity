@@ -74,11 +74,11 @@ extension HomeViewController: MCSessionDelegate {
             
         }else if str.contains("request"){
             
-            var arquivos: [String] = []
+//            var arquivos: [String] = []
             
             
             sendMsgPrivate(message: "\(listOfFiles)", peer: -2, peerIDRequest: peerID)
-            print(arquivos)
+//            print(arquivos)
         } else if str.contains("PeerRequest") {
             
             let message = str.split(separator: "-")
@@ -89,10 +89,16 @@ extension HomeViewController: MCSessionDelegate {
             
             let msg = "\(fileName)-\(owner))"
             let msgStr = String(msg)
-            let ownerPerrID = mcSession.connectedPeers.filter { $0.displayName == String(owner) }
             
+            print("procurando peer: \(owner)")
             
-            sendMsgPrivate(message: "\(msgStr)-P2P-\(peerID.displayName)", peer: -2, peerIDRequest: ownerPerrID.first)
+            dump(mcSession.connectedPeers)
+            
+            let ownerPeerID = mcSession.connectedPeers.filter { $0.displayName.elementsEqual(owner) || $0.displayName.contains(owner)}
+            
+            dump("encontrado: \(ownerPeerID)" )
+
+            sendMsgPrivate(message: "\(msgStr)-P2P-\(peerID.displayName)", peer: -2, peerIDRequest: ownerPeerID.first)
             
             
         }else if str.contains("P2P") {
@@ -125,6 +131,7 @@ extension HomeViewController: MCSessionDelegate {
             let path = Bundle.main.path(forResource: name, ofType: fileType)
             
             let peerToSend = mcSession.connectedPeers.filter {$0.displayName == destination}
+            
             
             
             mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
