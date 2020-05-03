@@ -57,13 +57,15 @@ extension HomeViewController: MCSessionDelegate {
             for arq in arquivo {
                 let hash = MD5(string: String(arq))
                 let stringWithHash = "\(arq)-\(peerID.displayName)-Hash:\(hash)"
+//                stringWithHash = stringWithHash.re
                 listOfFiles.append(String(stringWithHash))
             }
+            print("Recebi arquivos e atualizei a lista: \(listOfFiles.count)")
             
             
             
             
-            OperationQueue.main.addOperation {
+            DispatchQueue.main.async{
                 self.tableView.reloadData()
             }
             

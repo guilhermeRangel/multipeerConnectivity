@@ -53,9 +53,8 @@ class HomeViewController: UIViewController {
         txtAreaChat.isEditable = false
         txtAreaChat.isScrollEnabled = true
         
-        self.hideKeyboardWhenTappedAround()
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self,
-                                                              action: #selector(HomeViewController.dismissKeyboard)))
+//        self.hideKeyboardWhenTappedAround()
+//        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self,                                                              action: #selector(HomeViewController.dismissKeyboard)))
         view.addSubview(picker)
         
         self.mcNearbyServiceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType: "teste")
@@ -274,6 +273,7 @@ extension HomeViewController{
         do {
             let items = try fm.contentsOfDirectory(atPath: path)
             for item in items {
+                
                 if item.hasSuffix("txt") || item.hasSuffix("png"){
                     //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
                     if isHosting {
@@ -391,6 +391,30 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return ""
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if indexPath.section == 1 {
+            
+            dump(listOfFiles.count)
+            dump(listOfFiles[indexPath.row])
+            
+            showResquestFileAlert(with: listOfFiles[indexPath.row])
+        }
+    }
+    
+    
+    @objc func showResquestFileAlert(with name: String) {
+        let ac = UIAlertController(title: "Voce solicitou o arquivo: \(name)", message: nil, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+            self.requestFileToPeer(receiver: self.myPeerID)
+        }))
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(ac, animated: true)
+    }
+    
+    func requestFileToPeer(receiver: MCPeerID) {
+        print("Esse peer solicitou um arquivo: \(receiver)")
+    }
     
 }
 
