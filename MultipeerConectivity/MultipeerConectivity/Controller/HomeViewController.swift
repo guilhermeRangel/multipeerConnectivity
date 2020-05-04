@@ -23,9 +23,10 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var txtAreaChat: UITextView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var picker: UIPickerView!
-    @IBOutlet weak var txtFiled: UITextField!
+   
     @IBOutlet weak var btnSend: UIButton!
     
+    @IBOutlet weak var txtFiled: UITextField!
     
     
     var peerNumberInPicker = 0
@@ -52,13 +53,14 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         
-        txtFiled.delegate = self
+        
         txtAreaChat.delegate = self
         txtAreaChat.isEditable = false
         txtAreaChat.isScrollEnabled = true
+        txtFiled.delegate = self
         
-        //        self.hideKeyboardWhenTappedAround()
-        //        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self,                                                              action: #selector(HomeViewController.dismissKeyboard)))
+//                self.hideKeyboardWhenTappedAround()
+//                self.view.addGestureRecognizer(UITapGestureRecognizer(target: self,                                                              action: #selector(HomeViewController.dismissKeyboard)))
         view.addSubview(picker)
         
         self.mcNearbyServiceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType: "teste")
@@ -96,6 +98,7 @@ class HomeViewController: UIViewController {
     }
     
     
+    
     @IBAction func btnRecursosDiponiveis(_ sender: UIButton) {
         //implementar logica para mandar uma mensagem para o host e o host enviar a lista de com todos, alimentar o listOfFiles recebido o host
         sendMsgPrivate(message: "request", peer: Codigo.sendToHost, peerIDRequest: myPeerID)
@@ -115,11 +118,13 @@ class HomeViewController: UIViewController {
         }else{
             sendMsgByPicker(message: msgWrited, peer: peerNumberInPicker)
         }
-        
+    
         txtFiled.text = ""
         peerNumberInPicker = 0
         
     }
+    
+  
     
     
     //MARK: - Envia mensagem para todos os peers
@@ -302,6 +307,27 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     
 }
 
+//MARK: - TextField Delegate Extension
+extension HomeViewController: UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        btnSend.resignFirstResponder()
+         msgWrited = textField.text ?? "enviado"
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+           btnSend.resignFirstResponder()
+        msgWrited = textField.text ?? "enviado"
+        
+    }
+    
+    //captura a mensagem digitada
+    @IBAction func txtField(_ sender: UITextField) {
+        msgWrited = sender.text ?? "enviado"
+    }
+}
+
+
 //MARK: - Funcoes
 extension HomeViewController{
     
@@ -409,21 +435,6 @@ extension HomeViewController: UITextViewDelegate{
 
 
 //MARK: - TextField Delegate Extension
-extension HomeViewController: UITextFieldDelegate{
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        btnSend.resignFirstResponder()
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-    }
-    
-    //captura a mensagem digitada
-    @IBAction func txtField(_ sender: UITextField) {
-        msgWrited = sender.text ?? "enviado"
-    }
-}
 
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
