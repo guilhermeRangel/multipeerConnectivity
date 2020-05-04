@@ -236,7 +236,8 @@ class HomeViewController: UIViewController {
         mcBrowser.delegate = self
         present(mcBrowser, animated: true)
         getLocalFilesName()
-        self.serviceNearbyBrowser?.stopBrowsingForPeers()
+//        self.serviceNearbyBrowser?.stopBrowsingForPeers()
+        
         
     }
     

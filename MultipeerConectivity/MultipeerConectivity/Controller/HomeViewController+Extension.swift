@@ -78,12 +78,15 @@ extension HomeViewController: MCSessionDelegate {
             
         }else if str.contains("request"){
             
-//            var arquivos: [String] = []
+            //            var arquivos: [String] = []
             
             
             sendMsgPrivate(message: "\(listOfFiles)", peer: .sendToPeer, peerIDRequest: peerID)
-//            print(arquivos)
-        } else if str.contains("PeerRequest") {
+            //            print(arquivos)
+        }
+            
+            ///servidor está buscando peer dono do arquivo
+        else if str.contains("PeerRequest") {
             
             let message = str.split(separator: "-")
             
@@ -91,14 +94,14 @@ extension HomeViewController: MCSessionDelegate {
             
             let owner = message[1]
             
-            let msg = "\(fileName)-\(owner))"
+            let msg = "\(fileName)-\(owner)"
             let msgStr = String(msg)
             
             print("procurando peer: \(owner)")
             
             dump(mcSession.connectedPeers)
             
-//            let ownerPeerID = mcSession.connectedPeers.filter { $0.displayName.elementsEqual(owner) || $0.displayName.contains(owner)}
+            //            let ownerPeerID = mcSession.connectedPeers.filter { $0.displayName.elementsEqual(owner) || $0.displayName.contains(owner)}
             
             var ownerPeerID: MCPeerID?
             
@@ -109,11 +112,14 @@ extension HomeViewController: MCSessionDelegate {
             }
             
             dump("encontrado: \(ownerPeerID)" )
-
+            
+            
             sendMsgPrivate(message: "\(msgStr)-P2P-\(peerID.displayName)", peer: .sendToPeer, peerIDRequest: ownerPeerID)
             
             
-        } else if str.contains("P2P") {
+        }
+            // dono do arquivo deve enviar o arquivo solicitado
+        else if str.contains("P2P") {
             // "[\"Teste.txt\"-iPhone SE (2nd generation))-P2P-iPhone de Matheus
             
             // "[\"Teste.txt\"
@@ -142,8 +148,27 @@ extension HomeViewController: MCSessionDelegate {
             let fm = FileManager.default
             let path = Bundle.main.path(forResource: name, ofType: fileType)
             
+            // procura o MCPeerID do destino
             let peerToSend = mcSession.connectedPeers.filter {$0.displayName == destination}
             
+            let mcPeerID = MCPeerID(displayName: String(destination))
+            
+            print(mcPeerID)
+            
+            if let url = URL(string: path!) {
+                do {
+                    mcSession.sendResource(at: url, withName: String(fileName), toPeer: mcSession.connectedPeers.randomElement()!) { (error) in
+                        if error != nil {
+                            print("Erro ao enviar o arquiv: \(error)")
+                        }
+                    }
+                    //                try! mcSession.send(Data(contentsOf: URL(string: path!)!), toPeers: peerToSend, with: .reliable)
+                }
+                catch let error {
+                    NSLog("%@", "Error for sending: \(error)")
+                }
+                
+            }
             
             
             mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
@@ -151,9 +176,6 @@ extension HomeViewController: MCSessionDelegate {
                     print("Error ao enviar arquivo: \(error)")
                 }
             }
-            
-            
-            
             
         }
         
@@ -175,6 +197,12 @@ extension HomeViewController: MCSessionDelegate {
         if error != nil {
             print("Erro ao receber o arquivo: \(resourceName)")
         }
+        
+        if let data = try? Data(contentsOf: localURL!) {
+            print(data)
+        }
+        
+        
         print("Recebeu arquivo: \(resourceName)")
     }
 }
@@ -196,7 +224,7 @@ extension HomeViewController: MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         print("found peer: \(peerID.displayName)")
         //        guard let mcSession = mcSession else { return }
-        browser.invitePeer(peerID, to: mcSession, withContext: nil, timeout: 30)    }
+        browser.invitePeer(peerID, to: mcSession, withContext: nil, timeout: 20)    }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         print("lostPeer: \(peerID.displayName)")
@@ -222,6 +250,8 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
                 self.sendOverlay(myPeer: "\(self.myPeerID.displayName)-overlay")
             })
         }
+        
+//                self.serviceNearbyBrowser?.stopBrowsingForPeers()
         
     }
     
