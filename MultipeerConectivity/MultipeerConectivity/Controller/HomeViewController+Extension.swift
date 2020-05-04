@@ -151,13 +151,10 @@ extension HomeViewController: MCSessionDelegate {
             // procura o MCPeerID do destino
             let peerToSend = mcSession.connectedPeers.filter {$0.displayName == destination}
             
-            let mcPeerID = MCPeerID(displayName: String(destination))
-            
-            print(mcPeerID)
             
             if let url = URL(string: path!) {
                 do {
-                    mcSession.sendResource(at: url, withName: String(fileName), toPeer: mcSession.connectedPeers.randomElement()!) { (error) in
+                    mcSession.sendResource(at: url, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
                         if error != nil {
                             print("Erro ao enviar o arquiv: \(error)")
                         }
@@ -171,11 +168,11 @@ extension HomeViewController: MCSessionDelegate {
             }
             
             
-            mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
-                if error != nil {
-                    print("Error ao enviar arquivo: \(error)")
-                }
-            }
+//            mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
+//                if error != nil {
+//                    print("Error ao enviar arquivo: \(error)")
+//                }
+//            }
             
         }
         
