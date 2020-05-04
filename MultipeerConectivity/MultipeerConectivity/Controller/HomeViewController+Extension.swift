@@ -208,7 +208,11 @@ extension HomeViewController: MCSessionDelegate {
         print("Teste complete path with name \(complete.absoluteString)")
             do {
                 let destinationURL =  complete
-                try FileManager.default.moveItem(at: localURL!, to: destinationURL)
+                
+                let data = try Data(contentsOf: localURL!)
+               
+                try FileManager.default.createFile(atPath: destinationURL.absoluteString, contents: data, attributes: nil)
+                
                 print("Recebeu")
             } catch  {
                 print("Error: \(error)")
@@ -270,12 +274,12 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
             
             print(message)
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
-                print("enviando posicao a cada 5s")
+//                print("enviando posicao a cada 5s")
                 self.sendOverlay(myPeer: "\(self.myPeerID.displayName)-overlay")
             })
         }
         
-//                self.serviceNearbyBrowser?.stopBrowsingForPeers()
+                self.serviceNearbyBrowser?.stopBrowsingForPeers()
         
     }
     

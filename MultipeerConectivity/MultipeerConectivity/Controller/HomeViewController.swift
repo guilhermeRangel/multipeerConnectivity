@@ -148,8 +148,6 @@ class HomeViewController: UIViewController {
                 NSLog("%@", "Error for sending: \(error)")
             }
         }
-        
-        
     }
     
     
@@ -201,7 +199,6 @@ class HomeViewController: UIViewController {
                     peers.append(mcSession.connectedPeers[0])
                     do {
                         try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                        
                     }
                     catch let error {
                         NSLog("%@", "Error for sending: \(error)")
@@ -215,7 +212,6 @@ class HomeViewController: UIViewController {
                 
                 do {
                     try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                    
                 }
                 catch let error {
                     NSLog("%@", "Error for sending: \(error)")
@@ -333,7 +329,7 @@ extension HomeViewController{
             
             /// filtra os item que sao do tipo .txt ou .png
             let itensFiltered = items.filter { $0.hasSuffix("txt") || $0.hasSuffix("png")}
-
+            
             /// pega dois item aleatorios para ser os seus arquivos base, deixando mais claro na hora da execucao
             guard let item1 = itensFiltered.randomElement() else { return }
             guard let item2 = itensFiltered.randomElement() else { return }
@@ -342,7 +338,7 @@ extension HomeViewController{
             let hasCalculated1 = sha256(name: name.first!.description, type: name.last!.description)
             
             
-             let name2 = item2.split(separator: ".")
+            let name2 = item2.split(separator: ".")
             let hasCalculated2 = sha256(name: name2.first!.description, type: name2.last!.description)
             //so o host deve ter essa lista de arquivos alimentado com os arquivos de todos
             if isHosting {
