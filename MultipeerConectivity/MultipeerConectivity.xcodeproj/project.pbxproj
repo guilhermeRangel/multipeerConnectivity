@@ -60,6 +60,8 @@
 		77D9527A244D241C0040C721 = {
 			isa = PBXGroup;
 			children = (
+				8A154E432460D3C800533240 /* Download */,
+				8A154E442460D3F900533240 /* Download */,
 				77D95285244D241C0040C721 /* MultipeerConectivity */,
 				77D95284244D241C0040C721 /* Products */,
 			);
@@ -76,7 +78,6 @@
 		77D95285244D241C0040C721 /* MultipeerConectivity */ = {
 			isa = PBXGroup;
 			children = (
-				8A75BCD824609B0600CF15DD /* Download */,
 				77DF4A9E24591EC600A7B885 /* Controller */,
 				8A0F814A2457356000D42CCE /* Files */,
 				8AB4F7422457252E00216490 /* Support */,
@@ -112,11 +113,20 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
-		8A75BCD824609B0600CF15DD /* Download */ = {
+		8A154E432460D3C800533240 /* Download */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Download;
+			name = Download;
+			path = MultipeerConectivity/Download;
+			sourceTree = "<group>";
+		};
+		8A154E442460D3F900533240 /* Download */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Download;
+			path = ../Download;
 			sourceTree = "<group>";
 		};
 		8AB4F73F2457247B00216490 /* Model */ = {
@@ -372,7 +382,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TYNC5NT5U5;
+				DEVELOPMENT_TEAM = ZJDDP65ZQ3;
 				INFOPLIST_FILE = MultipeerConectivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -390,7 +400,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TYNC5NT5U5;
+				DEVELOPMENT_TEAM = ZJDDP65ZQ3;
 				INFOPLIST_FILE = MultipeerConectivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (

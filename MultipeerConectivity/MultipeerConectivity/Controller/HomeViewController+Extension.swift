@@ -152,27 +152,27 @@ extension HomeViewController: MCSessionDelegate {
             let peerToSend = mcSession.connectedPeers.filter {$0.displayName == destination}
             
             
-             let url = URL(fileURLWithPath: path)
-                do {
-                    mcSession.sendResource(at: url, withName: url.lastPathComponent, toPeer: peerToSend.first!) { (error) in
-                        if error != nil {
-                            print("Erro ao enviar o arquiv: \(error)")
-                        }
+            let url = URL(fileURLWithPath: path)
+            do {
+                mcSession.sendResource(at: url, withName: url.lastPathComponent, toPeer: peerToSend.first!) { (error) in
+                    if error != nil {
+                        print("Erro ao enviar o arquiv: \(error)")
                     }
-                    
-                }
-                catch let error {
-                    NSLog("%@", "Error for sending: \(error)")
                 }
                 
+            }
+            catch let error {
+                NSLog("%@", "Error for sending: \(error)")
+            }
             
             
             
-//            mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
-//                if error != nil {
-//                    print("Error ao enviar arquivo: \(error)")
-//                }
-//            }
+            
+            //            mcSession.sendResource(at: URL(string: path!)!, withName: String(fileName), toPeer: peerToSend.first!) { (error) in
+            //                if error != nil {
+            //                    print("Error ao enviar arquivo: \(error)")
+            //                }
+            //            }
             
         }
         
@@ -194,41 +194,74 @@ extension HomeViewController: MCSessionDelegate {
         
         print("Nome do arquivo: \(localURL?.absoluteString)")
         
-        /// pega o path da pasta download
-
-        let path = Bundle.main.urls(forResourcesWithExtension: nil, subdirectory: "Download")
-        
-        print("Teste path \(path?.first?.absoluteString)")
-        
-        let path2 = Bundle.main.bundleURL
         
         
-        let complete = path2.appendingPathComponent("Download", isDirectory: true)
+        let file = localURL?.absoluteString.split(separator: ".")
         
-        print("Teste complete path with name \(complete.absoluteString)")
+        if (file?.last?.hasSuffix("txt"))! {
+            
             do {
-                let destinationURL =  complete
-                
                 let data = try Data(contentsOf: localURL!)
-               
-                try FileManager.default.createFile(atPath: destinationURL.absoluteString, contents: data, attributes: nil)
-                
-                print("Recebeu")
+                dump("Recebeu um txt: \(data)")
             } catch  {
-                print("Error: \(error)")
+                print("Error ao converter o arquivo recebeido: \(error)")
             }
+            
+            
+        } else if (file?.last?.hasSuffix("png"))! {
+            do {
+                let data = try Data(contentsOf: localURL!)
+                dump("Recebeu uma imagem: \(data)")
+                
+            } catch  {
+                print("Error ao converter o arquivo recebeido: \(error)")
+            }
+        }
+        
+        /// pega o path da pasta download
+        
+        let fm = FileManager.default
+        let path = Bundle.main.bundlePath
+        
+        do {
+            /// pega todos arquivos do diretorio do projeto
+            let items = try fm.contentsOfDirectory(atPath: path)
+            
+//            let items2 = try fm.cont
+            
+            let downloadFolder = items.filter{ $0.contains("Download")}
+            
+            let downloadPath = Bundle.main.path(forResource: downloadFolder.first, ofType: nil)
+        }catch {
+            
+        }
+        
+        let path2 = Bundle.main.path(forResource: "Download", ofType: "")
+        
+        
+        
+//        let complete = path2.appendingPathComponent("Download", isDirectory: true)
+        let complete = path.appending("/Download")
+
+        print("Teste complete path with name \(complete)")
+        do {
+            let destinationURL =  complete
+            
+            let data = try Data(contentsOf: localURL!)
+            
+            try FileManager.default.createFile(atPath: destinationURL, contents: data, attributes: nil)
+            
+            print(data)
+            print("Recebeu")
+        } catch  {
+            print("Error: \(error)")
+        }
         
         
         
         if error != nil {
             print("Erro ao receber o arquivo: \(resourceName)")
         }
-        
-        
-        
-//        if let data = try? Data(contentsOf: localURL!) {
-//            print(data)
-//        }
         
         
         print("Recebeu arquivo: \(resourceName)")
@@ -274,12 +307,12 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
             
             print(message)
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
-//                print("enviando posicao a cada 5s")
+                //                print("enviando posicao a cada 5s")
                 self.sendOverlay(myPeer: "\(self.myPeerID.displayName)-overlay")
             })
         }
         
-                self.serviceNearbyBrowser?.stopBrowsingForPeers()
+        self.serviceNearbyBrowser?.stopBrowsingForPeers()
         
     }
     
