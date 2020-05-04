@@ -12,8 +12,11 @@ import CryptoKit
 import Foundation
 class HomeViewController: UIViewController {
     
-    
-    
+    enum Codigo: Int {
+        case sendToAll = 0
+        case sendToHost = -1
+        case sendToPeer = -2
+    }
     
     @IBOutlet weak var hostOrGuest: UILabel!
     @IBOutlet weak var connectionsLabel: UILabel!
@@ -95,7 +98,7 @@ class HomeViewController: UIViewController {
     
     @IBAction func btnRecursosDiponiveis(_ sender: UIButton) {
         //implementar logica para mandar uma mensagem para o host e o host enviar a lista de com todos, alimentar o listOfFiles recebido o host
-        sendMsgPrivate(message: "request", peer: -1, peerIDRequest: myPeerID)
+        sendMsgPrivate(message: "request", peer: Codigo.sendToHost, peerIDRequest: myPeerID)
         
     }
     
@@ -110,7 +113,7 @@ class HomeViewController: UIViewController {
         if peerNumberInPicker == 0{
             sendMsg(message: msgWrited)
         }else{
-            sendMsgPrivate(message: msgWrited, peer: peerNumberInPicker, peerIDRequest: nil)
+            sendMsgByPicker(message: msgWrited, peer: peerNumberInPicker)
         }
         
         txtFiled.text = ""
@@ -156,28 +159,42 @@ class HomeViewController: UIViewController {
         
         
         let msg = "\(message)PeerRequest"
- 
-            var peers:[MCPeerID] = []
-            
-            peers.append(mcSession.connectedPeers[0])
         
-            do {
-                try mcSession.send(msg.data(using: .utf8)!, toPeers: peers, with: .reliable)
-            }
-            catch let error {
-                NSLog("%@", "Error for sending: \(error)")
-            }
+        var peers:[MCPeerID] = []
+        
+        peers.append(mcSession.connectedPeers[0])
+        
+        do {
+            try mcSession.send(msg.data(using: .utf8)!, toPeers: peers, with: .reliable)
+        }
+        catch let error {
+            NSLog("%@", "Error for sending: \(error)")
+        }
         
     }
     
-    func sendMsgPrivate(message: String, peer: Int, peerIDRequest: MCPeerID?) {
+    func sendMsgByPicker(message: String, peer: Int) {
+        //manda para o peer escolhido no picker
+        var peers:[MCPeerID] = []
+        
+        // alterei aqui para compilar, mudar para funcionar o picker
+        peers.append(mcSession.connectedPeers[peer])
+        do {
+            try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
+        }
+        catch let error {
+            NSLog("%@", "Error for sending: \(error)")
+        }
+    }
+    
+    func sendMsgPrivate(message: String, peer: Codigo, peerIDRequest: MCPeerID?) {
         if self.mcSession.connectedPeers.count > 0 {
-            if peer == 0 {
+            if peer.rawValue == 0 {
                 sendMsg(message: message)
                 
                 
                 //envia msg com os arquivos para o host quando ele loga no sistema
-            }else if peer == -1{
+            }else if peer.rawValue == -1{
                 if !isHosting{
                     var peers:[MCPeerID] = []
                     
@@ -191,7 +208,8 @@ class HomeViewController: UIViewController {
                     }
                 }
                 
-            }else if peer == -2 {
+                ///envia mensagem para um peer especifico
+            }else if peer.rawValue == -2 {
                 var peers:[MCPeerID] = []
                 peers.append(peerIDRequest!)
                 
@@ -203,29 +221,10 @@ class HomeViewController: UIViewController {
                     NSLog("%@", "Error for sending: \(error)")
                 }
             }
-                
             
-            
-                
-                
-                
-            else {
-                //manda para o peer escolhido no picker
-                var peers:[MCPeerID] = []
-                peers.append(mcSession.connectedPeers[peer])
-                do {
-                    try mcSession.send(message.data(using: .utf8)!, toPeers: peers, with: .reliable)
-                }
-                catch let error {
-                    NSLog("%@", "Error for sending: \(error)")
-                }
-            }
         }
         
     }
-    
-    
-    
     
     func joinSession(action: UIAlertAction)  {
         isHosting = false
@@ -237,6 +236,7 @@ class HomeViewController: UIViewController {
         mcBrowser.delegate = self
         present(mcBrowser, animated: true)
         getLocalFilesName()
+        self.serviceNearbyBrowser?.stopBrowsingForPeers()
         
     }
     
@@ -466,7 +466,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let ac = UIAlertController(title: "Voce solicitou o arquivo: \(name)", message: nil, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
             self.peerToPeerRequest(message: name)
-
+            
         }))
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(ac, animated: true)

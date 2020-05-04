@@ -13,6 +13,10 @@ import UIKit
 
 extension HomeViewController: MCSessionDelegate {
     
+    func session(_ session: MCSession, didReceiveCertificate certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {
+        certificateHandler(true)
+    }
+    
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
         case .connected:
@@ -77,7 +81,7 @@ extension HomeViewController: MCSessionDelegate {
 //            var arquivos: [String] = []
             
             
-            sendMsgPrivate(message: "\(listOfFiles)", peer: -2, peerIDRequest: peerID)
+            sendMsgPrivate(message: "\(listOfFiles)", peer: .sendToPeer, peerIDRequest: peerID)
 //            print(arquivos)
         } else if str.contains("PeerRequest") {
             
@@ -94,14 +98,22 @@ extension HomeViewController: MCSessionDelegate {
             
             dump(mcSession.connectedPeers)
             
-            let ownerPeerID = mcSession.connectedPeers.filter { $0.displayName.elementsEqual(owner) || $0.displayName.contains(owner)}
+//            let ownerPeerID = mcSession.connectedPeers.filter { $0.displayName.elementsEqual(owner) || $0.displayName.contains(owner)}
+            
+            var ownerPeerID: MCPeerID?
+            
+            mcSession.connectedPeers.forEach { peer in
+                if peer.displayName.elementsEqual(owner) || peer.displayName.contains(owner) {
+                    ownerPeerID = peer
+                }
+            }
             
             dump("encontrado: \(ownerPeerID)" )
 
-            sendMsgPrivate(message: "\(msgStr)-P2P-\(peerID.displayName)", peer: -2, peerIDRequest: ownerPeerID.first)
+            sendMsgPrivate(message: "\(msgStr)-P2P-\(peerID.displayName)", peer: .sendToPeer, peerIDRequest: ownerPeerID)
             
             
-        }else if str.contains("P2P") {
+        } else if str.contains("P2P") {
             // "[\"Teste.txt\"-iPhone SE (2nd generation))-P2P-iPhone de Matheus
             
             // "[\"Teste.txt\"
@@ -202,7 +214,7 @@ extension HomeViewController: MCBrowserViewControllerDelegate {
             var message = ""
             
             self.myListOfFiles.forEach {message += "\($0);"}
-            self.sendMsgPrivate(message: "\(message);hash", peer: -1, peerIDRequest: nil)
+            self.sendMsgPrivate(message: "\(message);hash", peer: .sendToHost, peerIDRequest: nil)
             
             print(message)
             Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: {_ in
